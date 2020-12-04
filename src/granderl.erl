@@ -8,9 +8,25 @@
 -compile(no_native).
 -on_load(init/0).
 
+load_default() ->
+    case code:priv_dir(?MODULE) of
+        {error, _} ->
+            EbinDir = filename:dirname(code:which(?MODULE)),
+            AppPath = filename:dirname(EbinDir),
+            filename:join(AppPath, "priv");
+        Dir -> Dir
+    end.
+
+load_nif() ->
+    case os:getenv("NIF_DIR") of
+        false -> load_default();
+        Path -> Path
+    end.
+
+
 -spec init() -> ok.
 init() ->
-    SoName = filename:join(priv_dir(), "granderl"),
+    SoName = filename:join(load_nif(), "granderl"),
     case catch erlang:load_nif(SoName,[]) of
         _ -> ok
     end.
