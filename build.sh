@@ -20,4 +20,6 @@ up_to_date_p() {
 
 if (up_to_date_p); then exit 0; fi
 
-exec "$CC" $CFLAGS -shared -o "$TARGET" $SRC/$IMPLEMENTATION.c $SRC/granderl.c $LDFLAGS
+set -e
+"$CC" $CFLAGS -shared -o "$TARGET" $SRC/$IMPLEMENTATION.c $SRC/granderl.c $LDFLAGS
+rm -rf priv/granderl.so.dSYM
